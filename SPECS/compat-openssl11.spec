@@ -22,7 +22,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: compat-openssl11
 Version: 1.1.1k
-Release: 4%{?dist}
+Release: 5%{?dist}.1
 Epoch: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -76,6 +76,8 @@ Patch53: openssl-1.1.1-fips-crng-test.patch
 Patch55: openssl-1.1.1-arm-update.patch
 Patch56: openssl-1.1.1-s390x-ecc.patch
 Patch73: openssl-1.1.1-cve-2022-0778.patch
+Patch83: openssl-1.1.1-replace-expired-certs.patch
+Patch74: openssl-1.1.1-cve-2023-0286-X400.patch
 
 License: OpenSSL and ASL 2.0
 URL: http://www.openssl.org/
@@ -145,6 +147,8 @@ cp %{SOURCE13} test/
 %patch71 -p1 -b .conf-new
 %patch72 -p1 -b .disable-fips
 %patch73 -p1 -b .cve-2022-0778
+%patch -P 83 -p1 -b .replace-expired-certs
+%patch74 -p1 -b .cve-2023-0286
 
 cp apps/openssl.cnf apps/openssl11.cnf
 
@@ -313,11 +317,19 @@ install -m 644 apps/openssl11.cnf $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl1
 %ldconfig_scriptlets
 
 %changelog
+* Fri May 9 2025 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.1
+- Fixes cve-2023-0286 X.400 address type confusion in X.509 GeneralName
+  Resolves: RHEL-88969
+
+* Thu Sep 21 2023 Clemens Lang <cllang@redhat.com> - 1:1.1.1k-5
+- Update expired certificates used in the testsuite
+  Resolves: RHEL-5297
+
 * Mon May 30 2022 Clemens Lang <cllang@redhat.com> - 1:1.1.1k-4
 - Fixes CVE-2022-0778 openssl: Infinite loop in BN_mod_sqrt() reachable when parsing certificates
-  Resolves: rhbz#2063147
+  Resolves: rhbz#2063148
 - Disable FIPS mode; it does not work and will not be certified
-  Resolves: rhbz#2091968
+  Resolves: rhbz#2013669
 
 * Tue Oct 05 2021 Sahana Prasad <sahana@redhat.com> - 1:1.1.1k-3
 - updates OPENSSL_CONF to openssl11.cnf.
