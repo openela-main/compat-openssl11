@@ -78,6 +78,9 @@ Patch56: openssl-1.1.1-s390x-ecc.patch
 Patch73: openssl-1.1.1-cve-2022-0778.patch
 Patch83: openssl-1.1.1-replace-expired-certs.patch
 Patch74: openssl-1.1.1-cve-2023-0286-X400.patch
+# Fix for CVE-2025-69419 (next two)
+Patch75: openssl-1.1.1-hardening-from-openssl-3.0.1.patch
+Patch76: openssl-1.1.1-cve-2025-69419.patch
 
 License: OpenSSL and ASL 2.0
 URL: http://www.openssl.org/
@@ -149,6 +152,8 @@ cp %{SOURCE13} test/
 %patch73 -p1 -b .cve-2022-0778
 %patch -P 83 -p1 -b .replace-expired-certs
 %patch74 -p1 -b .cve-2023-0286
+%patch75 -p1 -b .cve-2025-69419-1
+%patch76 -p1 -b .cve-2025-69419-2
 
 cp apps/openssl.cnf apps/openssl11.cnf
 
@@ -317,6 +322,10 @@ install -m 644 apps/openssl11.cnf $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl1
 %ldconfig_scriptlets
 
 %changelog
+* Tue Feb 24 2026 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.2
+- Fixes CVE-2025-69419 OpenSSL: Arbitrary code execution due to out-of-bounds write in PKCS#12 processing
+  Resolves: RHEL-142722
+
 * Fri May 9 2025 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.1
 - Fixes cve-2023-0286 X.400 address type confusion in X.509 GeneralName
   Resolves: RHEL-88969
