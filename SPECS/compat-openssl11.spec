@@ -22,7 +22,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: compat-openssl11
 Version: 1.1.1k
-Release: 5%{?dist}.1
+Release: 5%{?dist}.2
 Epoch: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -154,7 +154,6 @@ cp %{SOURCE13} test/
 %patch74 -p1 -b .cve-2023-0286
 %patch75 -p1 -b .cve-2025-69419-1
 %patch76 -p1 -b .cve-2025-69419-2
-
 cp apps/openssl.cnf apps/openssl11.cnf
 
 %build
@@ -322,9 +321,9 @@ install -m 644 apps/openssl11.cnf $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl1
 %ldconfig_scriptlets
 
 %changelog
-* Tue Feb 24 2026 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.2
+* Wed Apr 1 2026 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.2
 - Fixes CVE-2025-69419 OpenSSL: Arbitrary code execution due to out-of-bounds write in PKCS#12 processing
-  Resolves: RHEL-142722
+  Resolves: RHEL-142723
 
 * Fri May 9 2025 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.1
 - Fixes cve-2023-0286 X.400 address type confusion in X.509 GeneralName
