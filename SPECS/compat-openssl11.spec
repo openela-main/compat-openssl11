@@ -22,7 +22,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: compat-openssl11
 Version: 1.1.1k
-Release: 5%{?dist}.2
+Release: 5%{?dist}.3
 Epoch: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -81,6 +81,8 @@ Patch74: openssl-1.1.1-cve-2023-0286-X400.patch
 # Fix for CVE-2025-69419 (next two)
 Patch75: openssl-1.1.1-hardening-from-openssl-3.0.1.patch
 Patch76: openssl-1.1.1-cve-2025-69419.patch
+# Fix for CVE-2026-28390
+Patch77: openssl-1.1.1-cve-2026-28390.patch
 
 License: OpenSSL and ASL 2.0
 URL: http://www.openssl.org/
@@ -154,6 +156,7 @@ cp %{SOURCE13} test/
 %patch74 -p1 -b .cve-2023-0286
 %patch75 -p1 -b .cve-2025-69419-1
 %patch76 -p1 -b .cve-2025-69419-2
+%patch77 -p1 -b .cve-2026-28390
 cp apps/openssl.cnf apps/openssl11.cnf
 
 %build
@@ -321,6 +324,10 @@ install -m 644 apps/openssl11.cnf $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl1
 %ldconfig_scriptlets
 
 %changelog
+* Wed May 13 2026 Pavol Žáčik <pzacik@redhat.com> - 1:1.1.1k-5.3
+- Fixes CVE-2026-28390: Denial of Service due to NULL pointer dereference in CMS EnvelopedData processing
+  Resolves: RHEL-165863
+
 * Wed Apr 1 2026 Petr Hybl <phybl@redhat.com> - 1:1.1.1k-5.2
 - Fixes CVE-2025-69419 OpenSSL: Arbitrary code execution due to out-of-bounds write in PKCS#12 processing
   Resolves: RHEL-142723
