@@ -22,7 +22,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: compat-openssl11
 Version: 1.1.1k
-Release: 5%{?dist}.3
+Release: 5%{?dist}.4
 Epoch: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -83,6 +83,8 @@ Patch75: openssl-1.1.1-hardening-from-openssl-3.0.1.patch
 Patch76: openssl-1.1.1-cve-2025-69419.patch
 # Fix for CVE-2026-28390
 Patch77: openssl-1.1.1-cve-2026-28390.patch
+# Fix for CVE-2026-45447
+Patch78: openssl-1.1.1-cve-2026-45447.patch
 
 License: OpenSSL and ASL 2.0
 URL: http://www.openssl.org/
@@ -116,47 +118,48 @@ releases.
 cp %{SOURCE12} crypto/ec/
 cp %{SOURCE13} test/
 
-%patch1 -p1 -b .build   %{?_rawbuild}
-%patch2 -p1 -b .defaults
-%patch3 -p1 -b .no-html  %{?_rawbuild}
-%patch4 -p1 -b .man-rename
+%patch -P 1 -p1 -b .build   %{?_rawbuild}
+%patch -P 2 -p1 -b .defaults
+%patch -P 3 -p1 -b .no-html  %{?_rawbuild}
+%patch -P 4 -p1 -b .man-rename
 
-%patch31 -p1 -b .conf-paths
-%patch32 -p1 -b .version-add-engines
-%patch33 -p1 -b .dgst
-%patch36 -p1 -b .no-brainpool
-%patch37 -p1 -b .curves
-%patch38 -p1 -b .no-weak-verify
-%patch40 -p1 -b .disable-ssl3
-%patch41 -p1 -b .system-cipherlist
-%patch42 -p1 -b .fips
-%patch45 -p1 -b .weak-ciphers
-%patch46 -p1 -b .seclevel
-%patch47 -p1 -b .ts-sha256-default
-%patch48 -p1 -b .fips-post-rand
-%patch49 -p1 -b .evp-kdf
-%patch50 -p1 -b .ssh-kdf
-%patch51 -p1 -b .intel-cet
-%patch52 -p1 -b .s390x-update
-%patch53 -p1 -b .crng-test
-%patch55 -p1 -b .arm-update
-%patch56 -p1 -b .s390x-ecc
-%patch60 -p1 -b .krb5-kdf
-%patch61 -p1 -b .edk2-build
-%patch62 -p1 -b .fips-curves
-%patch65 -p1 -b .drbg-selftest
-%patch66 -p1 -b .fips-dh
-%patch67 -p1 -b .kdf-selftest
-%patch69 -p1 -b .alpn-cb
-%patch70 -p1 -b .rewire-fips-drbg
-%patch71 -p1 -b .conf-new
-%patch72 -p1 -b .disable-fips
-%patch73 -p1 -b .cve-2022-0778
+%patch -P 31 -p1 -b .conf-paths
+%patch -P 32 -p1 -b .version-add-engines
+%patch -P 33 -p1 -b .dgst
+%patch -P 36 -p1 -b .no-brainpool
+%patch -P 37 -p1 -b .curves
+%patch -P 38 -p1 -b .no-weak-verify
+%patch -P 40 -p1 -b .disable-ssl3
+%patch -P 41 -p1 -b .system-cipherlist
+%patch -P 42 -p1 -b .fips
+%patch -P 45 -p1 -b .weak-ciphers
+%patch -P 46 -p1 -b .seclevel
+%patch -P 47 -p1 -b .ts-sha256-default
+%patch -P 48 -p1 -b .fips-post-rand
+%patch -P 49 -p1 -b .evp-kdf
+%patch -P 50 -p1 -b .ssh-kdf
+%patch -P 51 -p1 -b .intel-cet
+%patch -P 52 -p1 -b .s390x-update
+%patch -P 53 -p1 -b .crng-test
+%patch -P 55 -p1 -b .arm-update
+%patch -P 56 -p1 -b .s390x-ecc
+%patch -P 60 -p1 -b .krb5-kdf
+%patch -P 61 -p1 -b .edk2-build
+%patch -P 62 -p1 -b .fips-curves
+%patch -P 65 -p1 -b .drbg-selftest
+%patch -P 66 -p1 -b .fips-dh
+%patch -P 67 -p1 -b .kdf-selftest
+%patch -P 69 -p1 -b .alpn-cb
+%patch -P 70 -p1 -b .rewire-fips-drbg
+%patch -P 71 -p1 -b .conf-new
+%patch -P 72 -p1 -b .disable-fips
+%patch -P 73 -p1 -b .cve-2022-0778
 %patch -P 83 -p1 -b .replace-expired-certs
-%patch74 -p1 -b .cve-2023-0286
-%patch75 -p1 -b .cve-2025-69419-1
-%patch76 -p1 -b .cve-2025-69419-2
-%patch77 -p1 -b .cve-2026-28390
+%patch -P 74 -p1 -b .cve-2023-0286
+%patch -P 75 -p1 -b .cve-2025-69419-1
+%patch -P 76 -p1 -b .cve-2025-69419-2
+%patch -P 77 -p1 -b .cve-2026-28390
+%patch -P 78 -p1 -b .cve-2026-45447
 cp apps/openssl.cnf apps/openssl11.cnf
 
 %build
@@ -324,6 +327,9 @@ install -m 644 apps/openssl11.cnf $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl1
 %ldconfig_scriptlets
 
 %changelog
+* Fri Jun 26 2026 Stepan Broz <sbroz@redhat.com> - 1:1.1.1k-5.4
+- Fixes CVE-2026-45447: Heap Use-After-Free in OpenSSL PKCS7_verify()
+
 * Wed May 13 2026 Pavol Žáčik <pzacik@redhat.com> - 1:1.1.1k-5.3
 - Fixes CVE-2026-28390: Denial of Service due to NULL pointer dereference in CMS EnvelopedData processing
   Resolves: RHEL-165863
