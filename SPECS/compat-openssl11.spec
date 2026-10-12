@@ -22,7 +22,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: compat-openssl11
 Version: 1.1.1k
-Release: 5%{?dist}.4
+Release: 5%{?dist}.6
 Epoch: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -85,6 +85,10 @@ Patch76: openssl-1.1.1-cve-2025-69419.patch
 Patch77: openssl-1.1.1-cve-2026-28390.patch
 # Fix for CVE-2026-45447
 Patch78: openssl-1.1.1-cve-2026-45447.patch
+# Fix for CVE-2026-63072
+Patch79: openssl-1.1.1-cve-2026-63072.patch
+# Fix for CVE-2026-84782
+Patch80: openssl-1.1.1-cve-2026-84782.patch
 
 License: OpenSSL and ASL 2.0
 URL: http://www.openssl.org/
@@ -160,6 +164,8 @@ cp %{SOURCE13} test/
 %patch -P 76 -p1 -b .cve-2025-69419-2
 %patch -P 77 -p1 -b .cve-2026-28390
 %patch -P 78 -p1 -b .cve-2026-45447
+%patch -P 79 -p1 -b .cve-2026-63072
+%patch -P 80 -p1 -b .cve-2026-84782
 cp apps/openssl.cnf apps/openssl11.cnf
 
 %build
@@ -327,6 +333,14 @@ install -m 644 apps/openssl11.cnf $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl1
 %ldconfig_scriptlets
 
 %changelog
+* Wed Sep 30 2026 Pavol Zacik <pzacik@redhat.com> - 1:1.1.1k-5.6
+- Fixes CVE-2026-84782: DTLS Retransmits Handshake Messages From a Stale Buffer Offset
+  Resolves: RHEL-265517
+
+* Tue Sep 01 2026 Pavol Žáčik <pzacik@redhat.com> - 1:1.1.1k-5.5
+- Fixes CVE-2026-63072: Heap buffer overflow in CMS key unwrapping
+  Resolves: RHEL-246280
+
 * Fri Jun 26 2026 Stepan Broz <sbroz@redhat.com> - 1:1.1.1k-5.4
 - Fixes CVE-2026-45447: Heap Use-After-Free in OpenSSL PKCS7_verify()
 
